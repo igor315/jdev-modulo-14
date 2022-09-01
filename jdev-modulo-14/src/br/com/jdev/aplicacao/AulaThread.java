@@ -1,4 +1,7 @@
 package br.com.jdev.aplicacao;
+
+import javax.swing.JOptionPane;
+
 /**
  * 
  * @author Igor Santos
@@ -9,13 +12,32 @@ public class AulaThread {
 	
 	public static void main(String[] args) throws InterruptedException {
 		
-//		Quero executar esse envio com um tempo de parada, ou com tempo determinado
-		for(int pos = 0; pos <= 10; pos++) {
-//			thread.sleep define o tempo que ele executara essa rotina de enviar o email
-			Thread.sleep(2000);
-			System.out.println("Executando alguma rotina, por exemplo envio de e-mail");
-		}
+//		Thread processando em paralelo
+		new Thread() {
+			
+//			run executa o que nos queremos
+			public void run() {
+				
+//		Código da rotina que eu quero executar em paralelo
+				for(int pos = 0; pos <= 10; pos++) {
+					System.out.println("Executando alguma rotina, por exemplo envio de e-mail");
+
+					try {
+						Thread.sleep(10000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			};
 		
+//		start liga a thread que fica processando paralelamente
+		}.start();
+		
+		
+//		Código do sistema do usuário continua o fluxo de trabalho
 		System.out.println("CHEGOU AO FIM DO CÓDIGO DE TESTE DE THREAD");
+		
+		JOptionPane.showMessageDialog(null, "Sistema continua executando para o usuário");
 	}
 }
