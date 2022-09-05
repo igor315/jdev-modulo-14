@@ -14,8 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
+import javax.swing.JTextField;
 
 
 
@@ -46,11 +45,25 @@ public class TelaTimeThread extends JDialog {
 					e.printStackTrace();
 				}
 			}
-			
+		}
+	};
+	
+	private Runnable thread2 = new Runnable() {
+		@Override
+		public void run() {
+			while(true) {
+				mostraTempo2.setText(new SimpleDateFormat("dd-MM-yyyy h:mm:ss").format(Calendar.getInstance().getTime()));
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	};
 	
 	private Thread thread1Time;
+	private Thread thread2Time;
 	
 	public TelaTimeThread() {
 //		Configuracoes iniciais
@@ -68,6 +81,7 @@ public class TelaTimeThread extends JDialog {
 		gridBagConstraints.insets = new Insets(5, 10, 5, 5);
 		
 		descricaoHora.setPreferredSize(new Dimension(200, 25));
+		gridBagConstraints.gridy ++;
 		jPanel.add(descricaoHora, gridBagConstraints);
 		
 		mostraTempo.setPreferredSize(new Dimension(200, 25));
@@ -96,21 +110,30 @@ public class TelaTimeThread extends JDialog {
 		
 //		Executa o clique no botão start
 		jButtonStart.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				thread1Time = new Thread(thread1);
 				thread1Time.start();
+				
+				thread2Time = new Thread(thread2);
+				thread2Time.start();
+				
+				jButtonStart.setEnabled(false);
+				jButtonStop.setEnabled(true);
 			}
 		});
 		
 		jButtonStop.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				thread1Time.stop();
+				
+				jButtonStart.setEnabled(true);
 			}
 		});
+		
+		
+		jButtonStop.setEnabled(false);
 		
 		add(jPanel, BorderLayout.WEST);
 //		Sempre sera o ultimo comando a ser executado.
