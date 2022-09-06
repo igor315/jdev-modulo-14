@@ -23,47 +23,16 @@ public class TelaTimeThread extends JDialog {
 //	Painel de componentes
 	private JPanel jPanel = new JPanel(new GridBagLayout());
 	
-	private JLabel descricaoHora = new JLabel("Time da thread1");
-	private JTextField mostraTempo = new JTextField(); 
+	private JLabel descricaoNome = new JLabel("Nome");
+	private JTextField mostraNome = new JTextField(); 
 	
-	private JLabel descricaoHora2 = new JLabel("Time da thread2");
-	private JTextField mostraTempo2 = new JTextField();
+	private JLabel descricaoEmail = new JLabel("Email");
+	private JTextField mostraEmail = new JTextField();
 	
-	private JButton jButtonStart = new JButton("Start");
+	private JButton jButtonAddLista = new JButton("Add Lista");
 	private JButton jButtonStop = new JButton("Stop");
 	
-	private Runnable thread1 = new Runnable() {
-		
-		@Override
-		public void run() {
-//			Fica sempre rodando
-			while(true) {
-				mostraTempo.setText(new SimpleDateFormat("dd/MM/yyyy hh:mm.ss").format(Calendar.getInstance().getTime()));
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	};
-	
-	private Runnable thread2 = new Runnable() {
-		@Override
-		public void run() {
-			while(true) {
-				mostraTempo2.setText(new SimpleDateFormat("dd-MM-yyyy h:mm:ss").format(Calendar.getInstance().getTime()));
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	};
-	
-	private Thread thread1Time;
-	private Thread thread2Time;
+	private ImplementacaoFilaThread fila = new ImplementacaoFilaThread();
 	
 	public TelaTimeThread() {
 //		Configuracoes iniciais
@@ -80,60 +49,55 @@ public class TelaTimeThread extends JDialog {
 		gridBagConstraints.anchor = gridBagConstraints.WEST;
 		gridBagConstraints.insets = new Insets(5, 10, 5, 5);
 		
-		descricaoHora.setPreferredSize(new Dimension(200, 25));
+		descricaoNome.setPreferredSize(new Dimension(200, 25));
 		gridBagConstraints.gridy ++;
-		jPanel.add(descricaoHora, gridBagConstraints);
+		jPanel.add(descricaoNome, gridBagConstraints);
 		
-		mostraTempo.setPreferredSize(new Dimension(200, 25));
+		mostraNome.setPreferredSize(new Dimension(200, 25));
 		gridBagConstraints.gridy ++;
-		mostraTempo.setEditable(false);
-		jPanel.add(mostraTempo, gridBagConstraints);
+		mostraNome.setEditable(true);
+		jPanel.add(mostraNome, gridBagConstraints);
 		
-		descricaoHora2.setPreferredSize(new Dimension(200, 25));
+		descricaoEmail.setPreferredSize(new Dimension(200, 25));
 		gridBagConstraints.gridy ++;
-		jPanel.add(descricaoHora2, gridBagConstraints);
+		jPanel.add(descricaoEmail, gridBagConstraints);
 		
-		mostraTempo2.setPreferredSize(new Dimension(200, 25));
+		mostraEmail.setPreferredSize(new Dimension(200, 25));
 		gridBagConstraints.gridy ++;
-		mostraTempo2.setEditable(false);
-		jPanel.add(mostraTempo2, gridBagConstraints);
+		mostraEmail.setEditable(true);
+		jPanel.add(mostraEmail, gridBagConstraints);
 		
 		gridBagConstraints.gridwidth = 1;
 		
-		jButtonStart.setPreferredSize(new Dimension(92, 25));
+		jButtonAddLista.setPreferredSize(new Dimension(92, 25));
 		gridBagConstraints.gridy ++;
-		jPanel.add(jButtonStart, gridBagConstraints);
+		jPanel.add(jButtonAddLista, gridBagConstraints);
 		
 		jButtonStop.setPreferredSize(new Dimension(92, 25));
 		gridBagConstraints.gridx ++;
 		jPanel.add(jButtonStop, gridBagConstraints);
 		
 //		Executa o clique no botão start
-		jButtonStart.addActionListener(new ActionListener() {
+		jButtonAddLista.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				thread1Time = new Thread(thread1);
-				thread1Time.start();
 				
-				thread2Time = new Thread(thread2);
-				thread2Time.start();
+				ObjetoFilaThread filaThread = new ObjetoFilaThread();
+				filaThread.setNome(mostraNome.getText());
+				filaThread.setEmail(mostraEmail.getText());
 				
-				jButtonStart.setEnabled(false);
-				jButtonStop.setEnabled(true);
+				fila.add(filaThread);
 			}
 		});
 		
 		jButtonStop.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				thread1Time.stop();
 				
-				jButtonStart.setEnabled(true);
 			}
 		});
 		
-		
-		jButtonStop.setEnabled(false);
+		fila.start();
 		
 		add(jPanel, BorderLayout.WEST);
 //		Sempre sera o ultimo comando a ser executado.

@@ -3,22 +3,25 @@ package br.com.jdev.aplicacao;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class ImplementacaoFilaThread extends Thread{
-	
+public class ImplementacaoFilaThread extends Thread {
+
 	private static ConcurrentLinkedQueue<ObjetoFilaThread> pilha_fila = new ConcurrentLinkedQueue<ObjetoFilaThread>();
 
 	public static void add(ObjetoFilaThread objetoFilaThread) {
 		pilha_fila.add(objetoFilaThread);
 	}
-	
+
 	@Override
 	public void run() {
 		
+		System.out.println("Fila Rodando");
 
-		Iterator iteracao = pilha_fila.iterator();
+		while(true) {
 		
 //		Bloquear o acesso a esta lista por outros processos
-		synchronized (iteracao) {
+		synchronized (pilha_fila) {
+			
+		Iterator iteracao = pilha_fila.iterator();
 			
 //		Enquanto conter dados na lista irá processar
 			while(iteracao.hasNext()) {
@@ -38,19 +41,21 @@ public class ImplementacaoFilaThread extends Thread{
 				
 				try {
 //				Dar um tempo para descarga de memoria
-					Thread.sleep(100);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		
-		
 		try {
 //			Processou toda a lista, dar um tempo para limpeza de mémoria
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
+		}
+		
 	}
+
 }
