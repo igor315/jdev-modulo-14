@@ -13,6 +13,7 @@ import java.util.Calendar;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -81,12 +82,22 @@ public class TelaTimeThread extends JDialog {
 		jButtonAddLista.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+		
+//				Se a fila for igual null inicia um novo objeto.
+				if(fila == null) {
+					fila = new ImplementacaoFilaThread();
+					fila.start();
+				}
 				
-				ObjetoFilaThread filaThread = new ObjetoFilaThread();
-				filaThread.setNome(mostraNome.getText());
-				filaThread.setEmail(mostraEmail.getText());
-				
-				fila.add(filaThread);
+//				Enviando um email 100x 
+				for(int qtd = 0; qtd < 100; qtd++) {
+					
+					ObjetoFilaThread filaThread = new ObjetoFilaThread();
+					filaThread.setNome(mostraNome.getText());
+					filaThread.setEmail(mostraEmail.getText() + " - " + qtd);
+					
+					fila.add(filaThread);
+				}
 			}
 		});
 		
@@ -94,6 +105,9 @@ public class TelaTimeThread extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
+				fila.stop();
+				fila = null;
+				JOptionPane.showMessageDialog(null, "Você interrompeu o processo!");
 			}
 		});
 		
